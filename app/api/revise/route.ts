@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
+          model: 'claude-3-haiku-20240307',
           max_tokens: 2048,
           system: SYSTEM_PROMPT,
           messages: [{ role: 'user', content: buildUserPrompt(examType, subject, chapterName, mode) }],
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
+          model: 'claude-3-haiku-20240307',
           max_tokens: 2048,
           system: SYSTEM_PROMPT,
           messages: [{ role: 'user', content: buildMCQPrompt(examType, subject, chapterName) }],

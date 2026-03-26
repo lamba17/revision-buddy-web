@@ -6,10 +6,10 @@ import MCQCard from '../../components/MCQCard'
 import ChapterCard from '../../components/ChapterCard'
 import StreakCard from '../../components/StreakCard'
 import {
-  EXAM_DATA, MOCK_REVISION, MOCK_MCQS,
+  EXAM_DATA, MOCK_MCQS,
   MOCK_HISTORY, MOCK_WEAK_TOPICS, SUBJECT_COLORS, getGreeting,
 } from '../../lib/mockData'
-import type { AppView, RevisionMode, HistoryItem } from '../../types'
+import type { AppView, RevisionMode, HistoryItem, RevisionContent, MCQQuestion } from '../../types'
 
 // ─── Types ───────────────────────────────────────────────
 type TabId = 'home' | 'search' | 'practice' | 'progress' | 'profile'
@@ -42,6 +42,10 @@ export default function AppPage() {
   const [history, setHistory]         = useState<HistoryItem[]>(MOCK_HISTORY)
   const [dailyCount]                  = useState(1)
   const FREE_LIMIT = 3
+  const [revision, setRevision]       = useState<RevisionContent | null>(null)
+  const [mcqs, setMcqs]               = useState<MCQQuestion[]>(MOCK_MCQS)
+  const [isLoading, setIsLoading]     = useState(false)
+  const [loadError, setLoadError]     = useState('')
 
   // ── Navigation helpers ────────────────────────────────
   function goTab(t: TabId) {
@@ -57,8 +61,12 @@ export default function AppPage() {
     setView('modeSelect')
   }
 
-  function startRevision(mode: RevisionMode) {
+  async function startRevision(mode: RevisionMode) {
     setMode(mode)
+    setRevision(null)
+    setLoadError('')
+    setIsLoading(true)
+    setView('revision')
     setHistory(prev => [{
       id: Date.now().toString(),
       chapterName: selectedChapter,
@@ -67,7 +75,22 @@ export default function AppPage() {
       mode,
       revisedAt: new Date().toISOString(),
     }, ...prev].slice(0, 20))
-    setView('revision')
+
+    try {
+      const res = await fetch('/api/revise', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ examType: selectedExam, subject: selectedSubject, chapterName: selectedChapter, mode }),
+      })
+      if (!res.ok) throw new Error(`API error ${res.status}`)
+      const data = await res.json()
+      setRevision(data.revision)
+      if (data.mcqs?.length) setMcqs(data.mcqs)
+    } catch {
+      setLoadError('Could not generate revision. Please check your API key or try again.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   function startPractice() {
@@ -361,50 +384,92 @@ export default function AppPage() {
           </div>
         </div>
 
-        {/* Revision cards */}
-        <RevisionCard title="Key Concepts"     emoji="🧠" accentColor="#378ADD" items={MOCK_REVISION.keyConcepts} />
-        <RevisionCard title="Important Formulas" emoji="🔢" accentColor="#1D9E75" formulas={MOCK_REVISION.formulas} />
-        <RevisionCard title="Exam Tips"        emoji="🎯" accentColor="#E85D24" items={MOCK_REVISION.examTips} />
-        <RevisionCard title="Memory Tricks"    emoji="💡" accentColor="#7F77DD" items={MOCK_REVISION.memoryTricks} />
-        <RevisionCard title="Common Mistakes"  emoji="⚠️" accentColor="#EF4444" items={MOCK_REVISION.commonMistakes} />
+        {/* Loading skeleton */}
+        {isLoading && (
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              <p className="font-body text-sm text-muted">Generating your revision with AI…</p>
+            </div>
+            {[1,2,3].map(i => (
+              <div key={i} className="bg-white rounded-2xl p-5 border border-border shadow-card animate-pulse">
+                <div className="h-4 bg-gray-200 rounded w-1/3 mb-4" />
+                <div className="space-y-2">
+                  <div className="h-3 bg-gray-100 rounded w-full" />
+                  <div className="h-3 bg-gray-100 rounded w-5/6" />
+                  <div className="h-3 bg-gray-100 rounded w-4/6" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Error state */}
+        {loadError && !isLoading && (
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-5 text-center">
+            <p className="text-2xl mb-2">⚠️</p>
+            <p className="font-display font-semibold text-ink text-sm mb-1">Could not generate revision</p>
+            <p className="font-body text-xs text-muted mb-4">{loadError}</p>
+            <button
+              onClick={() => startRevision(selectedMode)}
+              className="bg-primary text-white font-display font-bold text-sm px-6 py-2.5 rounded-xl"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {/* Revision cards — real AI data */}
+        {revision && !isLoading && (
+          <>
+            <RevisionCard title="Key Concepts"      emoji="🧠" accentColor="#378ADD" items={revision.keyConcepts} />
+            <RevisionCard title="Important Formulas" emoji="🔢" accentColor="#1D9E75" formulas={revision.formulas} />
+            <RevisionCard title="Exam Tips"         emoji="🎯" accentColor="#E85D24" items={revision.examTips} />
+            <RevisionCard title="Memory Tricks"     emoji="💡" accentColor="#7F77DD" items={revision.memoryTricks} />
+            <RevisionCard title="Common Mistakes"   emoji="⚠️" accentColor="#EF4444" items={revision.commonMistakes} />
+          </>
+        )}
 
         {/* Practice CTA */}
-        <div className="sticky bottom-0 bg-bg/95 backdrop-blur-sm pt-3 pb-2">
-          <button
-            onClick={startPractice}
-            className="w-full bg-primary text-white font-display font-bold py-4 rounded-xl shadow-primary hover:bg-primary/90 hover:-translate-y-0.5 transition-all"
-          >
-            Practice MCQs on this chapter →
-          </button>
-          <p className="text-center font-body text-xs text-muted mt-1.5">5 questions · ~3 minutes</p>
-        </div>
+        {!isLoading && !loadError && (
+          <div className="sticky bottom-0 bg-bg/95 backdrop-blur-sm pt-3 pb-2">
+            <button
+              onClick={startPractice}
+              disabled={!revision}
+              className="w-full bg-primary text-white font-display font-bold py-4 rounded-xl shadow-primary hover:bg-primary/90 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Practice MCQs on this chapter →
+            </button>
+            <p className="text-center font-body text-xs text-muted mt-1.5">5 questions · ~3 minutes</p>
+          </div>
+        )}
       </div>
     )
   }
 
   function renderPractice() {
-    if (mcqIndex >= MOCK_MCQS.length) return renderScore()
+    if (mcqIndex >= mcqs.length) return renderScore()
     return (
       <div className="animate-fade-up">
         <div className="flex items-center justify-between mb-6">
           <button onClick={() => { setView('revision'); setTab('home') }} className="font-display font-semibold text-primary text-sm">← Back</button>
-          <span className="font-body text-xs text-muted">{selectedChapter || 'Thermodynamics'}</span>
+          <span className="font-body text-xs text-muted">{selectedChapter}</span>
         </div>
         <MCQCard
           key={mcqIndex}
-          question={MOCK_MCQS[mcqIndex]}
+          question={mcqs[mcqIndex]}
           questionNumber={mcqIndex + 1}
-          total={MOCK_MCQS.length}
+          total={mcqs.length}
           onAnswer={(correct) => { if (correct) setMcqScore(s => s + 1) }}
           onNext={() => setMcqIndex(i => i + 1)}
-          isLast={mcqIndex === MOCK_MCQS.length - 1}
+          isLast={mcqIndex === mcqs.length - 1}
         />
       </div>
     )
   }
 
   function renderScore() {
-    const pct = Math.round((mcqScore / MOCK_MCQS.length) * 100)
+    const pct = Math.round((mcqScore / mcqs.length) * 100)
     const good = pct >= 60
     return (
       <div className="flex flex-col items-center text-center py-8 space-y-5 animate-fade-up">
@@ -426,7 +491,7 @@ export default function AppPage() {
         </div>
 
         <div>
-          <h2 className="font-display font-extrabold text-ink text-2xl mb-1">You got {mcqScore} out of {MOCK_MCQS.length}</h2>
+          <h2 className="font-display font-extrabold text-ink text-2xl mb-1">You got {mcqScore} out of {mcqs.length}</h2>
           <p className="font-body text-muted text-sm">{good ? 'Great work! Keep it up.' : 'Revise this chapter again to improve.'}</p>
         </div>
 

@@ -82,12 +82,12 @@ export default function AppPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ examType: selectedExam, subject: selectedSubject, chapterName: selectedChapter, mode }),
       })
-      if (!res.ok) throw new Error(`API error ${res.status}`)
       const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? `API error ${res.status}`)
       setRevision(data.revision)
       if (data.mcqs?.length) setMcqs(data.mcqs)
-    } catch {
-      setLoadError('Could not generate revision. Please check your API key or try again.')
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : 'Could not generate revision. Please try again.')
     } finally {
       setIsLoading(false)
     }

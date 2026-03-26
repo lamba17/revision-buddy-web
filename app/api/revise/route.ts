@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
 
     const apiKey = process.env.ANTHROPIC_API_KEY
     if (!apiKey) {
-      return NextResponse.json({ error: 'API key not configured' }, { status: 500 })
+      return NextResponse.json({ error: 'ANTHROPIC_API_KEY not set in environment variables' }, { status: 500 })
     }
 
     // Call Claude for revision content and MCQs in parallel
@@ -98,9 +98,13 @@ export async function POST(req: NextRequest) {
       }),
     ])
 
-    if (!revisionRes.ok || !mcqRes.ok) {
+    if (!revisionRes.ok) {
       const err = await revisionRes.text()
-      return NextResponse.json({ error: 'Claude API error', detail: err }, { status: 502 })
+      return NextResponse.json({ error: `Claude API error ${revisionRes.status}`, detail: err }, { status: 502 })
+    }
+    if (!mcqRes.ok) {
+      const err = await mcqRes.text()
+      return NextResponse.json({ error: `Claude MCQ API error ${mcqRes.status}`, detail: err }, { status: 502 })
     }
 
     const [revisionData, mcqData] = await Promise.all([revisionRes.json(), mcqRes.json()])

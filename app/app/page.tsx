@@ -463,26 +463,35 @@ export default function AppPage() {
               <button
                 key={m.key}
                 onClick={() => !locked && startRevision(m.key)}
-                className={`w-full text-left rounded-2xl p-5 border-2 transition-all ${locked ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-card-hover cursor-pointer'}`}
-                style={{ borderColor: locked ? '#E5E7EB' : m.color, backgroundColor: locked ? '#fff' : m.bg }}
+                className={`w-full text-left rounded-2xl p-5 border-2 transition-all ${locked ? 'opacity-50 cursor-not-allowed' : 'hover:-translate-y-0.5 cursor-pointer'}`}
+                style={{
+                  borderColor: locked ? 'rgba(255,255,255,0.08)' : m.color + '60',
+                  background: locked ? 'rgba(255,255,255,0.03)' : m.color + '12',
+                }}
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{m.emoji}</span>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                         style={{ background: m.color + '20' }}>
+                      {m.emoji}
+                    </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-display font-bold text-ink text-base">{m.label}</span>
+                        <span className="font-display font-bold text-white text-base">{m.label}</span>
                         {locked && (
-                          <span className="text-[10px] font-display font-bold bg-warning-light text-warning px-2 py-0.5 rounded-full">⭐ Premium</span>
+                          <span className="text-[10px] font-display font-bold px-2 py-0.5 rounded-full"
+                                style={{ background: 'rgba(245,158,11,0.2)', color: '#F59E0B' }}>
+                            ⭐ Premium
+                          </span>
                         )}
                       </div>
                       <span className="font-body text-xs text-muted">{m.duration}</span>
                     </div>
                   </div>
-                  {!locked && <span className="font-body text-sm" style={{ color: m.color }}>→</span>}
+                  {!locked && <span className="text-lg" style={{ color: m.color }}>→</span>}
                 </div>
-                <p className="font-body text-sm text-muted leading-relaxed">{m.detail}</p>
-                {locked && <p className="font-display font-semibold text-xs text-primary mt-2">Unlock with Premium — ₹99/month</p>}
+                <p className="font-body text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>{m.detail}</p>
+                {locked && <p className="font-display font-semibold text-xs mt-2" style={{ color: '#6366F1' }}>Unlock with Premium — ₹99/month</p>}
               </button>
             )
           })}

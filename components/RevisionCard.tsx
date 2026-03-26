@@ -15,12 +15,13 @@ export default function RevisionCard({ title, emoji, accentColor, items, formula
 
   return (
     <div
-      className="bg-white rounded-2xl shadow-card overflow-hidden border border-border"
-      style={{ borderLeftWidth: 4, borderLeftColor: accentColor }}
+      className="rounded-2xl overflow-hidden border border-border"
+      style={{ borderLeftWidth: 4, borderLeftColor: accentColor, background: 'rgba(255,255,255,0.04)' }}
     >
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50/60 transition-colors"
+        className="w-full flex items-center justify-between p-5 text-left transition-colors"
+        style={{ background: 'transparent' }}
       >
         <div className="flex items-center gap-3">
           <span className="text-xl">{emoji}</span>

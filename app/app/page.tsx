@@ -146,7 +146,7 @@ export default function AppPage() {
         {/* Search bar */}
         <button
           onClick={() => goTab('search')}
-          className="w-full flex items-center gap-3 bg-white border-2 border-border rounded-xl px-4 py-3.5 text-left shadow-card hover:border-primary/40 hover:shadow-card-hover transition-all"
+          className="w-full flex items-center gap-3 bg-card border-2 border-border rounded-xl px-4 py-3.5 text-left shadow-card hover:border-primary/40 hover:shadow-card-hover transition-all"
         >
           <span className="text-muted text-lg">🔍</span>
           <span className="font-body text-muted text-[15px]">Search any chapter…</span>
@@ -173,7 +173,7 @@ export default function AppPage() {
                 <button
                   key={i}
                   onClick={() => openChapter(s.chapter, s.subject, selectedExam)}
-                  className="flex items-center gap-2 bg-white border border-border rounded-full px-3.5 py-2 text-sm font-body hover:border-primary/40 hover:shadow-card-hover transition-all"
+                  className="flex items-center gap-2 bg-card border border-border rounded-full px-3.5 py-2 text-sm font-body hover:border-primary/40 hover:shadow-card-hover transition-all"
                 >
                   <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
                   {s.chapter}
@@ -205,7 +205,7 @@ export default function AppPage() {
             <button
               key={i}
               onClick={() => openChapter(t.chapterName, t.subject, selectedExam)}
-              className="w-full flex items-center justify-between bg-white border border-red-100 rounded-xl px-4 py-3 mb-2 hover:shadow-card-hover transition-all text-left"
+              className="w-full flex items-center justify-between bg-card border border-red-100 rounded-xl px-4 py-3 mb-2 hover:shadow-card-hover transition-all text-left"
             >
               <div className="flex items-center gap-3">
                 <span className="text-base">⚠️</span>
@@ -235,7 +235,7 @@ export default function AppPage() {
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Type a chapter name…"
-            className="w-full pl-11 pr-4 py-3.5 bg-white border-2 border-border rounded-xl font-body text-[15px] text-ink placeholder-light focus:outline-none focus:border-primary transition-colors"
+            className="w-full pl-11 pr-4 py-3.5 bg-card border-2 border-border rounded-xl font-body text-[15px] text-ink placeholder-light focus:outline-none focus:border-primary transition-colors"
           />
           {query && (
             <button onClick={() => setQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-light hover:text-muted text-sm">✕</button>
@@ -245,12 +245,12 @@ export default function AppPage() {
         {/* Results */}
         {query.trim().length > 1 ? (
           results.length > 0 ? (
-            <div className="bg-white rounded-2xl border border-border shadow-card overflow-hidden">
+            <div className="bg-card rounded-2xl border border-border shadow-card overflow-hidden">
               {results.map((r, i) => (
                 <button
                   key={i}
                   onClick={() => openChapter(r.chapter, r.subject, r.examName)}
-                  className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-border last:border-0 hover:bg-bg transition-colors text-left"
+                  className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-border last:border-0 hover:bg-card-hover transition-colors text-left"
                 >
                   <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: r.color }} />
                   <div className="flex-1 min-w-0">
@@ -282,12 +282,12 @@ export default function AppPage() {
                     <p className="font-body text-xs font-semibold text-muted uppercase tracking-wider mb-2 pl-4">
                       {subject}
                     </p>
-                    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+                    <div className="bg-card rounded-2xl border border-border overflow-hidden">
                       {(chapters as string[]).map((ch, i) => (
                         <button
                           key={i}
                           onClick={() => openChapter(ch, subject, examName)}
-                          className="w-full flex items-center justify-between px-4 py-3 border-b border-border last:border-0 hover:bg-bg transition-colors text-left"
+                          className="w-full flex items-center justify-between px-4 py-3 border-b border-border last:border-0 hover:bg-card-hover transition-colors text-left"
                         >
                           <span className="font-body text-sm text-ink">{ch}</span>
                           <span className="text-light text-base">›</span>
@@ -364,7 +364,7 @@ export default function AppPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <button onClick={() => setView('modeSelect')} className="font-display font-semibold text-primary text-sm">← Back</button>
-          <button className="border border-border rounded-lg px-3 py-1.5 text-xs font-display font-semibold text-muted hover:bg-bg transition-colors">
+          <button className="border border-border rounded-lg px-3 py-1.5 text-xs font-display font-semibold text-muted hover:bg-card-hover transition-colors">
             🇮🇳 HI / 🇬🇧 EN
           </button>
         </div>
@@ -392,7 +392,7 @@ export default function AppPage() {
               <p className="font-body text-sm text-muted">Generating your revision with AI…</p>
             </div>
             {[1,2,3].map(i => (
-              <div key={i} className="bg-white rounded-2xl p-5 border border-border shadow-card animate-pulse">
+              <div key={i} className="bg-card rounded-2xl p-5 border border-border shadow-card animate-pulse">
                 <div className="h-4 bg-gray-200 rounded w-1/3 mb-4" />
                 <div className="space-y-2">
                   <div className="h-3 bg-gray-100 rounded w-full" />
@@ -517,7 +517,7 @@ export default function AppPage() {
           </button>
           <button
             onClick={() => { setView('revision'); setTab('home') }}
-            className="w-full bg-white text-primary font-display font-bold py-3.5 rounded-xl border-2 border-primary hover:bg-primary-light transition-all"
+            className="w-full bg-card text-primary font-display font-bold py-3.5 rounded-xl border-2 border-primary hover:bg-primary-light transition-all"
           >
             Revise Chapter Again
           </button>
@@ -538,7 +538,7 @@ export default function AppPage() {
             { num: '5',  label: 'Day Streak',        color: '#1D9E75' },
             { num: '67%', label: 'Avg Accuracy',     color: '#E85D24' },
           ].map(s => (
-            <div key={s.label} className="bg-white rounded-2xl p-4 border border-border shadow-card text-center">
+            <div key={s.label} className="bg-card rounded-2xl p-4 border border-border shadow-card text-center">
               <p className="font-display font-extrabold text-2xl" style={{ color: s.color }}>{s.num}</p>
               <p className="font-body text-[11px] text-muted mt-1 leading-tight">{s.label}</p>
             </div>
@@ -546,7 +546,7 @@ export default function AppPage() {
         </div>
 
         {/* Bar chart */}
-        <div className="bg-white rounded-2xl border border-border shadow-card p-5">
+        <div className="bg-card rounded-2xl border border-border shadow-card p-5">
           <h2 className="font-display font-bold text-ink text-sm mb-4">Accuracy by Chapter</h2>
           <div className="space-y-3">
             {MOCK_WEAK_TOPICS.map((t, i) => (
@@ -574,7 +574,7 @@ export default function AppPage() {
               <button
                 key={i}
                 onClick={() => openChapter(t.chapterName, t.subject, selectedExam)}
-                className="w-full flex items-center justify-between bg-white border border-border rounded-xl px-4 py-3.5 hover:shadow-card-hover transition-all text-left"
+                className="w-full flex items-center justify-between bg-card border border-border rounded-xl px-4 py-3.5 hover:shadow-card-hover transition-all text-left"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: barColor(t.accuracy) }} />
@@ -618,7 +618,7 @@ export default function AppPage() {
             { num: '87', label: 'MCQs Attempted' },
             { num: '71%', label: 'Accuracy' },
           ].map(s => (
-            <div key={s.label} className="bg-white rounded-2xl p-4 border border-border shadow-card text-center">
+            <div key={s.label} className="bg-card rounded-2xl p-4 border border-border shadow-card text-center">
               <p className="font-display font-extrabold text-primary text-2xl">{s.num}</p>
               <p className="font-body text-xs text-muted mt-1">{s.label}</p>
             </div>
@@ -640,7 +640,7 @@ export default function AppPage() {
             ))}
           </div>
           <div className="flex gap-3 mb-4">
-            <button className="flex-1 border border-white/20 rounded-xl py-3 text-white/80 font-display font-semibold text-sm hover:bg-white/10 transition-colors">₹99 / month</button>
+            <button className="flex-1 border border-white/20 rounded-xl py-3 text-white/80 font-display font-semibold text-sm hover:bg-card/10 transition-colors">₹99 / month</button>
             <button className="flex-1 bg-primary rounded-xl py-3 text-white font-display font-bold text-sm hover:bg-primary/90 transition-colors">
               ₹499 / 6 months
               <span className="block text-[10px] font-body text-white/75">Save 16%</span>
@@ -650,7 +650,7 @@ export default function AppPage() {
         </div>
 
         {/* Settings */}
-        <div className="bg-white rounded-2xl border border-border shadow-card overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border shadow-card overflow-hidden">
           {[
             { emoji: '🌐', label: 'Language', value: 'English', action: () => {} },
             { emoji: '📚', label: 'Change Exam', value: 'JEE Mains', action: () => {} },
@@ -660,7 +660,7 @@ export default function AppPage() {
             <button
               key={s.label}
               onClick={s.action}
-              className={`w-full flex items-center justify-between px-4 py-4 hover:bg-bg transition-colors ${i < arr.length - 1 ? 'border-b border-border' : ''}`}
+              className={`w-full flex items-center justify-between px-4 py-4 hover:bg-card-hover transition-colors ${i < arr.length - 1 ? 'border-b border-border' : ''}`}
             >
               <div className="flex items-center gap-3">
                 <span className="text-lg">{s.emoji}</span>
@@ -703,7 +703,7 @@ export default function AppPage() {
     <div className="min-h-screen bg-bg flex flex-col">
 
       {/* Top bar */}
-      <header className="bg-white border-b border-border px-4 h-14 flex items-center justify-between flex-shrink-0 sticky top-0 z-40">
+      <header className="border-b border-border px-4 h-14 flex items-center justify-between flex-shrink-0 sticky top-0 z-40 backdrop-blur-xl" style={{ background: 'rgba(11,11,26,0.9)' }}>
         <Link href="/" className="flex items-center gap-2">
           <span className="text-xl">📖</span>
           <span className="font-display font-bold text-ink text-sm tracking-tight">Revision Buddy</span>
@@ -724,14 +724,14 @@ export default function AppPage() {
       <div className="flex flex-1 overflow-hidden">
 
         {/* Sidebar — desktop only */}
-        <aside className="hidden md:flex flex-col w-56 bg-white border-r border-border flex-shrink-0 py-4 gap-1 px-3">
+        <aside className="hidden md:flex flex-col w-56 border-r border-border flex-shrink-0 py-4 gap-1 px-3" style={{ background: 'rgba(255,255,255,0.02)' }}>
           {TABS.map(t => {
             const active = tab === t.id
             return (
               <button
                 key={t.id}
                 onClick={() => goTab(t.id)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all ${active ? 'bg-primary-light text-primary font-display font-bold' : 'text-muted font-body hover:bg-bg hover:text-ink'}`}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all ${active ? 'bg-primary-light text-primary font-display font-bold' : 'text-muted font-body hover:bg-card-hover hover:text-ink'}`}
               >
                 <span className="text-base">{t.emoji}</span>
                 <span className="text-sm">{t.label}</span>
@@ -749,7 +749,7 @@ export default function AppPage() {
       </div>
 
       {/* Bottom nav — mobile only */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-border flex z-40">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 border-t border-border flex z-40 backdrop-blur-xl" style={{ background: 'rgba(11,11,26,0.95)' }}>
         {TABS.map(t => {
           const active = tab === t.id
           return (

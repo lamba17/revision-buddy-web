@@ -24,10 +24,10 @@ export default function MCQCard({ question, questionNumber, total, onAnswer, onN
   }
 
   function optionStyle(i: number) {
-    if (!answered) return 'border-border bg-white hover:border-primary/40 hover:bg-primary-light/30 cursor-pointer'
+    if (!answered) return 'border-border hover:border-primary/40 cursor-pointer'
     if (i === question.correctIndex) return 'border-success bg-success-light cursor-default'
     if (i === selected) return 'border-error bg-error-light cursor-default'
-    return 'border-border bg-white opacity-50 cursor-default'
+    return 'border-border opacity-40 cursor-default'
   }
 
   function optionTextStyle(i: number) {
@@ -52,7 +52,7 @@ export default function MCQCard({ question, questionNumber, total, onAnswer, onN
       </div>
 
       {/* Question */}
-      <div className="bg-white rounded-2xl shadow-card border border-border p-6">
+      <div className="rounded-2xl border border-border p-6" style={{ background: 'rgba(255,255,255,0.05)' }}>
         <p className="font-display font-semibold text-ink text-base leading-relaxed">{question.question}</p>
       </div>
 
@@ -62,6 +62,7 @@ export default function MCQCard({ question, questionNumber, total, onAnswer, onN
           <button
             key={i}
             onClick={() => pick(i)}
+            style={{ background: 'rgba(255,255,255,0.03)' }}
             className={`w-full flex items-start gap-3.5 p-4 rounded-xl border-2 transition-all duration-200 text-left ${optionStyle(i)}`}
           >
             <span className={`w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 transition-colors

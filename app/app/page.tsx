@@ -22,6 +22,15 @@ const TABS: { id: TabId; emoji: string; label: string }[] = [
   { id: 'profile',  emoji: '👤', label: 'Profile'  },
 ]
 
+const EXAM_META: Record<string, { icon: string; subtitle: string }> = {
+  'JEE Mains':      { icon: '⚛️',  subtitle: 'Engineering Entrance' },
+  'JEE Advanced':   { icon: '🔬',  subtitle: 'Advanced Engineering' },
+  'NEET':           { icon: '🩺',  subtitle: 'Medical Entrance' },
+  'Class 10 Boards':{ icon: '🏫',  subtitle: 'CBSE / State Boards' },
+  'Class 12 Boards':{ icon: '🎓',  subtitle: 'Science / Commerce / Arts' },
+  'CAT':            { icon: '💼',  subtitle: 'MBA Entrance' },
+}
+
 const MODES: { key: RevisionMode; emoji: string; label: string; duration: string; detail: string; color: string; bg: string; premiumOnly: boolean }[] = [
   { key: 'quick',      emoji: '⚡', label: 'Quick',      duration: '2 min',   detail: 'Key concepts + formulas only. Perfect before class.',          color: '#378ADD', bg: '#EBF4FF', premiumOnly: false },
   { key: 'deep',       emoji: '📚', label: 'Deep',       duration: '5 min',   detail: 'Full concepts + examples + tips for thorough understanding.',   color: '#7F77DD', bg: '#F0EFFF', premiumOnly: false },
@@ -31,7 +40,7 @@ const MODES: { key: RevisionMode; emoji: string; label: string; duration: string
 // ─── Main component ───────────────────────────────────────
 export default function AppPage() {
   const [tab, setTab]                 = useState<TabId>('home')
-  const [view, setView]               = useState<AppView>('home')
+  const [view, setView]               = useState<AppView>('examSelect')
   const [selectedChapter, setChapter] = useState('')
   const [selectedSubject, setSubject] = useState('')
   const [selectedExam, setSelectedExam] = useState('JEE Mains')
@@ -50,8 +59,13 @@ export default function AppPage() {
   // ── Navigation helpers ────────────────────────────────
   function goTab(t: TabId) {
     setTab(t)
-    setView(t === 'search' ? 'search' : t === 'practice' ? 'practice' : t === 'progress' ? 'progress' : t === 'profile' ? 'profile' : 'home')
+    setView(t === 'search' ? 'search' : t === 'practice' ? 'practice' : t === 'progress' ? 'progress' : t === 'profile' ? 'profile' : 'examSelect')
     setQuery('')
+  }
+
+  function selectExam(examName: string) {
+    setSelectedExam(examName)
+    setView('browse')
   }
 
   function openChapter(chapter: string, subject: string, examName: string) {
@@ -127,6 +141,126 @@ export default function AppPage() {
   // ─────────────────────────────────────────────────────
   // VIEW RENDERERS
   // ─────────────────────────────────────────────────────
+
+  function renderExamSelect() {
+    return (
+      <div className="animate-fade-up">
+        {/* Glow */}
+        <div className="fixed top-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full pointer-events-none"
+             style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+
+        <div className="relative text-center mb-10 pt-4">
+          <div className="inline-block mb-5 px-4 py-1.5 rounded-full text-xs font-display font-bold tracking-widest uppercase"
+               style={{ background: 'rgba(99,102,241,0.15)', color: '#A78BFA', border: '1px solid rgba(99,102,241,0.3)' }}>
+            STEP 1
+          </div>
+          <h1 className="font-display font-extrabold text-white text-3xl md:text-4xl tracking-tight mb-3">
+            Choose Your Exam
+          </h1>
+          <p className="font-body text-muted text-base">Select the exam you&apos;re preparing for</p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {Object.entries(EXAM_DATA).map(([name, data]) => {
+            const meta = EXAM_META[name] ?? { icon: '📚', subtitle: '' }
+            return (
+              <button
+                key={name}
+                onClick={() => selectExam(name)}
+                className="group relative rounded-2xl p-6 text-left border border-border transition-all hover:-translate-y-1 hover:border-primary/40"
+                style={{ background: 'rgba(255,255,255,0.04)' }}
+              >
+                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"
+                     style={{ background: 'radial-gradient(circle at top left, rgba(99,102,241,0.08), transparent 70%)' }} />
+                <div className="relative">
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-5"
+                       style={{ background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.25)' }}>
+                    {meta.icon}
+                  </div>
+                  <p className="font-display font-bold text-white text-lg mb-1">{name}</p>
+                  <p className="font-body text-muted text-sm">{meta.subtitle}</p>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
+
+  function renderBrowse() {
+    const exam = EXAM_DATA[selectedExam as keyof typeof EXAM_DATA]
+    if (!exam) return null
+    const meta = EXAM_META[selectedExam] ?? { icon: '📚', subtitle: '' }
+
+    return (
+      <div className="animate-fade-up space-y-6">
+        {/* Header */}
+        <div>
+          <button onClick={() => setView('examSelect')}
+                  className="flex items-center gap-2 font-display font-semibold text-muted text-sm mb-5 hover:text-white transition-colors">
+            ← Back
+          </button>
+          <div className="inline-block mb-4 px-4 py-1.5 rounded-full text-xs font-display font-bold tracking-widest uppercase"
+               style={{ background: 'rgba(99,102,241,0.15)', color: '#A78BFA', border: '1px solid rgba(99,102,241,0.3)' }}>
+            STEP 2
+          </div>
+          <h1 className="font-display font-extrabold text-white text-2xl md:text-3xl tracking-tight mb-1">
+            {meta.icon} {selectedExam}
+          </h1>
+          <p className="font-body text-muted text-sm">{meta.subtitle}</p>
+        </div>
+
+        {/* Search bar */}
+        <div className="relative">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted">🔍</span>
+          <input
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Search chapters…"
+            className="w-full pl-11 pr-4 py-3.5 rounded-xl font-body text-[15px] text-white placeholder-muted focus:outline-none focus:border-primary transition-colors border border-border"
+            style={{ background: 'rgba(255,255,255,0.05)' }}
+          />
+          {query && <button onClick={() => setQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted text-sm">✕</button>}
+        </div>
+
+        {/* Subjects + chapters */}
+        <div className="space-y-5">
+          {Object.entries(exam.subjects).map(([subject, chapters]) => {
+            const subjectColor = SUBJECT_COLORS[subject] ?? '#6366F1'
+            const filtered = (chapters as string[]).filter(ch =>
+              !query || ch.toLowerCase().includes(query.toLowerCase())
+            )
+            if (filtered.length === 0) return null
+            return (
+              <div key={subject}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: subjectColor }} />
+                  <p className="font-display font-bold text-white text-sm uppercase tracking-wider">{subject}</p>
+                  <span className="font-body text-xs text-muted ml-1">({filtered.length})</span>
+                </div>
+                <div className="rounded-2xl overflow-hidden border border-border" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                  {filtered.map((ch, i) => (
+                    <button
+                      key={i}
+                      onClick={() => openChapter(ch, subject, selectedExam)}
+                      className="w-full flex items-center justify-between px-4 py-3.5 border-b border-border last:border-0 hover:bg-card-hover transition-colors text-left"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: subjectColor }} />
+                        <span className="font-body text-sm text-white">{ch}</span>
+                      </div>
+                      <span className="text-muted text-lg flex-shrink-0">›</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
 
   function renderHome() {
     return (
@@ -307,7 +441,7 @@ export default function AppPage() {
   function renderModeSelect() {
     return (
       <div className="space-y-5 animate-fade-up">
-        <button onClick={() => setView(tab === 'search' ? 'search' : 'home')} className="font-display font-semibold text-primary text-sm">← Back</button>
+        <button onClick={() => setView(tab === 'search' ? 'search' : 'browse')} className="font-display font-semibold text-primary text-sm">← Back</button>
 
         <div>
           <h1 className="font-display font-extrabold text-ink text-xl mb-1">{selectedChapter}</h1>
@@ -684,6 +818,8 @@ export default function AppPage() {
   // ─────────────────────────────────────────────────────
   function renderView() {
     switch (view) {
+      case 'examSelect': return renderExamSelect()
+      case 'browse':     return renderBrowse()
       case 'home':       return renderHome()
       case 'search':     return renderSearch()
       case 'modeSelect': return renderModeSelect()
@@ -692,7 +828,7 @@ export default function AppPage() {
       case 'score':      return renderScore()
       case 'progress':   return renderProgress()
       case 'profile':    return renderProfile()
-      default:           return renderHome()
+      default:           return renderExamSelect()
     }
   }
 

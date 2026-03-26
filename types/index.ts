@@ -45,6 +45,8 @@ export interface HistoryItem {
 }
 
 export type AppView =
+  | 'examSelect'
+  | 'browse'
   | 'home'
   | 'search'
   | 'modeSelect'

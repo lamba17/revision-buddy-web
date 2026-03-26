@@ -83,7 +83,7 @@ export default function AppPage() {
         body: JSON.stringify({ examType: selectedExam, subject: selectedSubject, chapterName: selectedChapter, mode }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? `API error ${res.status}`)
+      if (!res.ok) throw new Error(data.detail ? `${data.error}: ${data.detail}` : (data.error ?? `API error ${res.status}`))
       setRevision(data.revision)
       if (data.mcqs?.length) setMcqs(data.mcqs)
     } catch (err) {

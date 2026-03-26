@@ -87,9 +87,10 @@ export default function LandingPage() {
 
           <p className="font-body text-muted text-lg md:text-xl mb-10 max-w-xl mx-auto leading-relaxed">
             AI-powered revision notes for{' '}
-            <span className="text-primary font-semibold">JEE Mains</span>,{' '}
-            <span className="text-[#7F77DD] font-semibold">JEE Advanced</span> &{' '}
-            <span className="text-accent font-semibold">NEET</span>.
+            <span className="text-primary font-semibold">JEE</span>,{' '}
+            <span className="text-accent font-semibold">NEET</span>,{' '}
+            <span className="text-[#EC4899] font-semibold">Boards</span> &{' '}
+            <span className="text-[#DC2626] font-semibold">CAT</span>.
             Key concepts, formulas, exam tips — in one place.
           </p>
 
@@ -113,7 +114,7 @@ export default function LandingPage() {
           <div className="mt-14 flex flex-wrap gap-6 justify-center">
             {[
               { num: '10K+', label: 'Students' },
-              { num: '3 exams', label: 'Covered' },
+              { num: '6 exams', label: 'Covered' },
               { num: '2 min', label: 'To revise' },
               { num: '500+', label: 'Chapters' },
             ].map((s) => (
@@ -151,7 +152,7 @@ export default function LandingPage() {
                   className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4"
                   style={{ backgroundColor: data.bgColor }}
                 >
-                  {name === 'JEE Mains' ? '⚛️' : name === 'JEE Advanced' ? '🔬' : '🧬'}
+                  {name === 'JEE Mains' ? '⚛️' : name === 'JEE Advanced' ? '🔬' : name === 'NEET' ? '🧬' : name === 'Class 10 Boards' ? '📚' : name === 'Class 12 Boards' ? '🎓' : '💼'}
                 </div>
                 <h3 className="font-display font-bold text-ink text-lg mb-1">{name}</h3>
                 <p className="font-body text-sm mb-4" style={{ color: data.color }}>
